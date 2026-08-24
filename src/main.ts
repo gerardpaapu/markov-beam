@@ -4,6 +4,10 @@ const loadFile = async () => {
   const raw = await FS.readFile('data/saucy.txt', 'utf8');
 
   // we lose some flavour in terms of intentional double new lines here
+  return corpusToLines(raw);
+};
+
+const corpusToLines = (raw: string): string[] => {
   const lines = [];
   let inHeader = true;
   for (const rawLine of raw.split(/\r\n|\n/)) {
@@ -24,7 +28,25 @@ const loadFile = async () => {
   }
 
   return lines;
-};
+}
+
+const linesToTokens =  (lines: string[]): string[] => {
+  let tokens = [];
+  let match;
+  for (const line of lines) {
+    if (line.trim() === '') {
+      tokens.push('<empty line>');
+      continue;
+    }
+    const TOKEN = /(\s+)|([a-z’-]+)|(\?|\.|\,|“|”)/gi;
+    while ((match = TOKEN.exec(line.trim())) != undefined) {
+      let token = match[0].replace(/\s+/, ' ');
+      if (token !== ' ') {
+        tokens.push(token);
+      }
+    }
+    return tokens;
+  }
 
 const normalise = (
   rawCount: Record<string, number>,
@@ -45,21 +67,7 @@ const normalise = (
 const main = async () => {
   const lines = await loadFile();
 
-  let tokens = [];
-  let match;
-  for (const line of lines) {
-    if (line.trim() === '') {
-      tokens.push('<empty line>');
-      continue;
-    }
-    const TOKEN = /(\s+)|([a-z’-]+)|(\?|\.|\,|“|”)/gi;
-    while ((match = TOKEN.exec(line.trim())) != undefined) {
-      let token = match[0].replace(/\s+/, ' ');
-      if (token !== ' ') {
-        tokens.push(token);
-      }
-    }
-  }
+
 
   console.log(`Producing counts`);
   const rawCounts = new Map<string, Record<string, number>>();
