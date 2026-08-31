@@ -1,5 +1,5 @@
 import { OUTPUT_LIMIT, EMPTY_LINE } from "../constants.ts";
-
+import { squirrel3 } from "../random/squirrel3.ts";
 
 // This strategy chooses the next token at each point by fairly sampling from the
 // probability distribution
@@ -18,13 +18,16 @@ export default function decode(frequencies: Map<string, Record<string, number>>)
         break;
       }
 
-      let p = Math.random();
+      // Seed chosen by artisans to guarantee randomness
+      let p = squirrel3(output.length, 0xE102210D) / 0x100000000;
+
       // we're choosing a value from [0, 1)
       // and we're going to subtract the weight of each option
       // until it uses up p, this gives us a weighted sample
       // from the options
+      const fallback = Object.keys(table).at(-1);
       for (const [k, v] of Object.entries(table)) {
-        if (v >= p) {
+        if (v >= p || k === fallback) {
           output.push(k);
           break;
         }

@@ -1,7 +1,7 @@
 import * as FS from "node:fs/promises";
 
 export const readData = async () => {
-  const raw = await FS.readFile("data/swans-way.txt", "utf8");
+  const raw = await FS.readFile("data/pride.txt", "utf8");
   return corpusToTokens(raw);
 };
 

@@ -13,13 +13,25 @@ const normalise = (
   }
 
   const freq = Object.create(null) as Weights;
-  for (const [token, c] of Object.entries(rawCount)) {
+  const entries = Object.entries(rawCount).toSorted(([,a], [,b]) => b - a);
+  for (const [token, c] of entries) {
     freq[token] = c / total;
   }
 
   return freq;
 };
-  
+
+function heaviestFirst(obj: Weights): Weights {
+  let entries = Object.entries(obj)
+    .toSorted(([,a], [,b]) => b - a);
+
+  const result = Object.create(null);
+  for (const [k, v] of entries) {
+    result[k] = v;
+  }
+
+  return result;
+}
 
 export const buildNormalisedWeightsMap = (tokens: string[]): Map<string, Weights> => {
   const rawCounts = new Map<string, Weights>();
@@ -38,14 +50,18 @@ export const buildNormalisedWeightsMap = (tokens: string[]): Map<string, Weights
     }
 
     count[next]++;
-  }
-
+  }  
+  
+  
+  console.log(`raw counts for She = ${JSON.stringify(heaviestFirst(rawCounts.get('She')!), null, 2)}`);
   const normalisedWeightsMap = new Map<string, Weights>();
   for (const [key, rawCount] of rawCounts.entries()) {
-    let table = normalise(rawCount);
+    let table = normalise(heaviestFirst(rawCount));
     delete table[key];
     normalisedWeightsMap.set(key, table);
   }
+
+  console.log(`normalised for She = ${JSON.stringify(normalisedWeightsMap.get('She'), null, 2)}`);
 
   return normalisedWeightsMap;
 }
