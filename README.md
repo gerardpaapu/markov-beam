@@ -84,7 +84,7 @@ for (const [token, weight] of weights) {
 return bestToken;
 ```
 
-Choosing the best option while only looking one step ahead, can be good for some scenarios but leaves you wide open to degenerate cases, looping, and doesn't gauruntee that the combination of choices you make is the best overall.
+Choosing the best option while only looking one step ahead, can be good for some scenarios but leaves you wide open to degenerate cases, looping, and doesn't guarantee that the combination of choices you make is the best overall.
 
 Here's what the output looked like:
 > “I am sure, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time, and the same time,
